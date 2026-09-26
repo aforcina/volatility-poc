@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+option csharp_namespace = "VolatilityPoc.Grpc";
+
+package volatility;
+
+// Simple model of an option quote
+message OptionQuote {
+  string side = 1; // "C" or "P"
+  double strike = 2;
+  double bid = 3;
+  double ask = 4;
+  string maturity = 5; // ISO date e.g., "2026-10-15"
+}
+
+// Calibration options (extensible)
+message CalibrationOptions {
+  string method = 1; // e.g., "levenberg-marquardt"
+  int32 max_iterations = 2;
+}
+
+// Single compute request: instrument + market quotes
+message ComputeRequest {
+  string request_id = 1;
+  string instrument_id = 2; // equity or index id
+  repeated OptionQuote quotes = 3;
+  CalibrationOptions options = 4;
+}
+
+// A single point of the resulting vol surface
+message VolPoint {
+  double strike = 1;
+  string maturity = 2;
+  double implied_vol = 3;
+}
+
+// Progress message: either progress only or final result included
+message ComputeProgress {
+  string request_id = 1;
+  double progress = 2; // 0..1
+  bool is_final = 3;
+  repeated VolPoint snapshot = 4; // optional intermediate snapshot or final surface
+  string message = 5;
+}
+
+service ComputeService {
+  // Streams progress updates and final result
+  rpc Compute (ComputeRequest) returns (stream ComputeProgress);
+}
