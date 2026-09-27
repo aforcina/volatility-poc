@@ -17,4 +17,9 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.1.0" />
     <PackageReference Include="Win2D.WinUI" Version="1.0.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="WebContent\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Resources\**\*.xaml" />
+  </ItemGroup>
 </Project>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Design tokens. ThemeResource allows WinUI to resolve system light/dark values. -->
+    <Color x:Key="AppAccentColor">#4CC2FF</Color>
+    <Color x:Key="AppAccentStrongColor">#0078D4</Color>
+    <Color x:Key="AppPositiveColor">#36C98F</Color>
+    <Color x:Key="AppWarningColor">#F2C94C</Color>
+    <Color x:Key="AppNegativeColor">#F06A6A</Color>
+
+    <SolidColorBrush x:Key="AppAccentBrush" Color="{StaticResource AppAccentColor}" />
+    <SolidColorBrush x:Key="AppAccentStrongBrush" Color="{StaticResource AppAccentStrongColor}" />
+    <SolidColorBrush x:Key="AppPositiveBrush" Color="{StaticResource AppPositiveColor}" />
+    <SolidColorBrush x:Key="AppWarningBrush" Color="{StaticResource AppWarningColor}" />
+    <SolidColorBrush x:Key="AppNegativeBrush" Color="{StaticResource AppNegativeColor}" />
+
+    <SolidColorBrush x:Key="AppCardFillBrush" Color="{ThemeResource SystemAltHighColor}" />
+    <SolidColorBrush x:Key="AppCardBorderBrush" Color="{ThemeResource SystemControlForegroundBaseLowColor}" />
+    <SolidColorBrush x:Key="AppMutedTextBrush" Color="{ThemeResource SystemControlForegroundBaseMediumLowColor}" />
+</ResourceDictionary>

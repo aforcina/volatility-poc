@@ -3,30 +3,138 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.Graphics.Canvas.UI.Xaml"
-    Title="Volatility POC" Width="1000" Height="700">
-    <Grid Margin="12">
+    Title="Volatility Workbench">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/WinUIClient/Resources/ThemeColors.xaml" />
+                <ResourceDictionary Source="/WinUIClient/Resources/ThemeControls.xaml" />
+                <ResourceDictionary Source="/WinUIClient/Resources/ThemeTypography.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Spacing="8">
-            <ComboBox x:Name="InstrumentCombo" Width="180" ItemsSource="{x:Bind ViewModel.Instruments}" SelectedItem="{x:Bind ViewModel.SelectedInstrument, Mode=TwoWay}" />
-            <Button Content="Fetch Quotes & Compute" Click="OnComputeClick" />
-            <Button Content="Cancel" Click="OnCancelClick" Margin="8,0,0,0"/>
-            <Button Content="Export" Click="OnExportClick" Margin="8,0,0,0"/>
-            <Button Content="Settings" Click="OnSettingsClick" Margin="12,0,0,0"/>
-        </StackPanel>
+        <!-- Application shell header -->
+        <Border Grid.Row="0" Padding="28,20,28,18" Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-        <ProgressBar Grid.Row="1" x:Name="ProgressBar" Minimum="0" Maximum="1" Value="{x:Bind ViewModel.Progress, Mode=OneWay}" Height="6" Margin="0,8,0,8"/>
+                <StackPanel Spacing="3">
+                    <TextBlock Text="VOLATILITY WORKBENCH" Style="{StaticResource CaptionTextStyle}" />
+                    <TextBlock Text="Surface calibration" Style="{StaticResource PageTitleTextStyle}" />
+                    <TextBlock Text="Market data, calibration and publishing in one workspace" Style="{StaticResource CaptionTextStyle}" />
+                </StackPanel>
 
-        <Grid Grid.Row="2">
-            <controls:CanvasControl x:Name="NativeCanvas" Visibility="{x:Bind ViewModel.NativeVisibility, Mode=OneWay}" Draw="NativeCanvas_Draw" />
-            <WebView2 x:Name="ChartView" Visibility="{x:Bind ViewModel.WebViewVisibility, Mode=OneWay}" />
-        </Grid>
+                <Button Grid.Column="1" Content="Settings" Click="OnSettingsClick"
+                        Style="{StaticResource ToolbarButtonStyle}" VerticalAlignment="Center">
+                    <Button.ContentTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <SymbolIcon Symbol="Setting" />
+                                <TextBlock Text="Settings" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </Button.ContentTemplate>
+                </Button>
+            </Grid>
+        </Border>
 
-        <TextBlock Grid.Row="3" Text="{x:Bind ViewModel.StatusMessage}" Margin="0,8,0,0"/>
+        <ScrollViewer Grid.Row="1" Padding="28,20,28,20">
+            <Grid RowSpacing="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- Workflow command bar -->
+                <Border Grid.Row="0" Style="{StaticResource CardBorderStyle}">
+                    <Grid ColumnSpacing="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="220" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="4">
+                            <TextBlock Text="Instrument" Style="{StaticResource CaptionTextStyle}" />
+                            <ComboBox ItemsSource="{x:Bind ViewModel.Instruments}"
+                                      SelectedItem="{x:Bind ViewModel.SelectedInstrument, Mode=TwoWay}" />
+                        </StackPanel>
+                        <Button Grid.Column="1" Content="Fetch quotes &amp; compute"
+                                Click="OnComputeClick" Style="{StaticResource PrimaryActionButtonStyle}"
+                                VerticalAlignment="Bottom" />
+                        <Button Grid.Column="2" Content="Cancel" Click="OnCancelClick"
+                                Style="{StaticResource ToolbarButtonStyle}" VerticalAlignment="Bottom" />
+                        <Button Grid.Column="3" Content="Export" Click="OnExportClick"
+                                Style="{StaticResource ToolbarButtonStyle}" VerticalAlignment="Bottom" />
+                    </Grid>
+                </Border>
+
+                <!-- Progress and workflow state -->
+                <Grid Grid.Row="1" ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="220" />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource CardBorderStyle}">
+                        <StackPanel Spacing="8">
+                            <Grid>
+                                <TextBlock Text="Calibration progress" Style="{StaticResource SectionTitleTextStyle}" />
+                                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.StatusMessage}" HorizontalAlignment="Right" Style="{StaticResource CaptionTextStyle}" />
+                            </Grid>
+                            <ProgressBar Minimum="0" Maximum="1" Value="{x:Bind ViewModel.Progress, Mode=OneWay}" Height="6" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CardBorderStyle}">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Selected instrument" Style="{StaticResource CaptionTextStyle}" />
+                            <TextBlock Text="{x:Bind ViewModel.SelectedInstrument}" FontSize="20" FontWeight="SemiBold" />
+                            <TextBlock Text="Ready for market data" Style="{StaticResource CaptionTextStyle}" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Chart workspace -->
+                <Border Grid.Row="2" Style="{StaticResource CardBorderStyle}" MinHeight="420">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid Margin="0,0,0,12">
+                            <TextBlock Text="Volatility smile" Style="{StaticResource SectionTitleTextStyle}" />
+                            <TextBlock Text="Selected maturity · implied volatility by strike" HorizontalAlignment="Right" Style="{StaticResource CaptionTextStyle}" />
+                        </Grid>
+                        <Grid Grid.Row="1">
+                            <controls:CanvasControl x:Name="NativeCanvas"
+                                Visibility="{x:Bind ViewModel.NativeVisibility, Mode=OneWay}"
+                                Draw="NativeCanvas_Draw" />
+                            <WebView2 x:Name="ChartView"
+                                Visibility="{x:Bind ViewModel.WebViewVisibility, Mode=OneWay}" />
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+        </ScrollViewer>
+
+        <Border Grid.Row="2" Padding="28,10" Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
+            <Grid>
+                <TextBlock Text="Internal analytics · Local compute host" Style="{StaticResource CaptionTextStyle}" />
+                <TextBlock Text="gRPC / HTTP2" HorizontalAlignment="Right" Style="{StaticResource CaptionTextStyle}" />
+            </Grid>
+        </Border>
     </Grid>
 </Window>
